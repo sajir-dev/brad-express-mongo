@@ -3,6 +3,9 @@ const express = require('express');
 // const logger = require('./middlewares/logger')
 const morgan = require('morgan')
 
+// Importing errorHandler 
+const errorHandler = require('./middlewares/error')
+
 // Loading config vars
 dotenv.config({ path: './config/config.env' });
 
@@ -27,6 +30,9 @@ if (process.env.NODE_ENV === 'DEVELOPMENT') {
 
 
 app.use("/api/v1/bootcamps", bootcamps)
+
+// Using errorHandler after bootcamps routes to handle the errors comes on bootcamps routes
+app.use(errorHandler)
 
 PORT = process.env.PORT || 5000;
 
