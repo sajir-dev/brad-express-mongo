@@ -1,38 +1,45 @@
 const dotenv = require('dotenv');
 const express = require('express');
-// const logger = require('./middlewares/logger')
-const morgan = require('morgan')
+// const logger = require('./middlewares/logger');
+const morgan = require('morgan');
+
+const fileupload = require('express-fileupload');
 
 // Importing errorHandler 
-const errorHandler = require('./middlewares/error')
+const errorHandler = require('./middlewares/error');
 
 // Loading config vars
 dotenv.config({ path: './config/config.env' });
 
 // import db-config
-const dbConn = require('./config/db')
-dbConn()
+const dbConn = require('./config/db');
+dbConn();
 
 // importing routes
-const bootcamps = require('./routes/bootcamps')
+const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
 
 const app = express();
 
 // import body parser 
-app.use(express.json())
+app.use(express.json());
 
 // custom route
 // app.use(logger)
 
+// Dev loggin middleware
 if (process.env.NODE_ENV === 'DEVELOPMENT') {
-    app.use(morgan('dev'))
+    app.use(morgan('dev'));
 }
 
+// fileupload middleware
+app.use(fileupload());
 
-app.use("/api/v1/bootcamps", bootcamps)
+app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 // Using errorHandler after bootcamps routes to handle the errors comes on bootcamps routes
-app.use(errorHandler)
+app.use(errorHandler);
 
 PORT = process.env.PORT || 5000;
 
@@ -43,7 +50,7 @@ const server = app.listen(
 
 // Handling unhandled server rejections
 process.on('unhandledRejection', (err, promise) => {
-    console.log(`Error ${err.message}`)
+    console.log(`Error ${err.message}`);
     // Close server and exit process
-    server.close(() => process.exit(1))
+    server.close(() => process.exit(1));
 })
